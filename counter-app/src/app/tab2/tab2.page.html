@@ -46,6 +46,28 @@
       </ion-item>
     </div>
 
+    <div class="filter-container">
+      <ion-item>
+        <ion-select
+          label="Filtr hodnot"
+          [value]="counterService.valueFilter()"
+          (ionChange)="changeValueFilter($event.detail.value)"
+        >
+          <ion-select-option value="all">
+            Všechny
+          </ion-select-option>
+
+          <ion-select-option value="positive">
+            Kladné
+          </ion-select-option>
+
+          <ion-select-option value="negative">
+            Záporné
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
+
     <ion-list>
       @for (counter of counterService.filteredCounters(); track counter.id) {
         <ion-item>

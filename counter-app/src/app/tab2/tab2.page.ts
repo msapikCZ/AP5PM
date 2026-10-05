@@ -17,7 +17,7 @@ import {
   IonAlert,
   ToastController
 } from '@ionic/angular';
-import { CounterService, CounterSort } from '../services/counter.service';
+import { CounterService, CounterSort, ValueFilter, } from '../services/counter.service';
 
 @Component({
   selector: 'app-tab2',
@@ -84,6 +84,10 @@ export class Tab2Page implements OnInit {
 
   async changeSort(sort: CounterSort): Promise<void> {
     await this.counterService.setSort(sort);
+  }
+
+  async changeValueFilter(filter: ValueFilter): Promise<void> { 
+    await this.counterService.setValueFilter(filter); 
   }
 
   async handleInput(event: Event): Promise<void> { 
