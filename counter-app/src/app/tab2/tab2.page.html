@@ -21,8 +21,30 @@
       </ion-button>
     </div>
 
+    <div class="sort-container">
+      <ion-item>
+        <ion-select
+          label="Řazení"
+          [value]="counterService.sort()"
+          (ionChange)="changeSort($event.detail.value)"
+        >
+          <ion-select-option value="date">
+            Nejnovější
+          </ion-select-option>
+
+          <ion-select-option value="name">
+            Podle názvu
+          </ion-select-option>
+
+          <ion-select-option value="value">
+            Podle hodnoty
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
+
     <ion-list>
-      @for (counter of counterService.counters(); track counter.id) {
+      @for (counter of counterService.sortedCounters(); track counter.id) {
         <ion-item>
           <ion-label>
             <h2>{{ counter.name }}</h2>
