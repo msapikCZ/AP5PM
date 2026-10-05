@@ -14,6 +14,8 @@ import {
   IonTitle,
   IonToolbar,
   IonSearchbar,
+  IonAlert,
+  ToastController
 } from '@ionic/angular';
 import { CounterService, CounterSort } from '../services/counter.service';
 
@@ -36,10 +38,37 @@ import { CounterService, CounterSort } from '../services/counter.service';
     IonTitle,
     IonToolbar,
     IonSearchbar,
+    IonAlert,
   ],
 })
 export class Tab2Page implements OnInit {
   readonly counterService = inject(CounterService);
+
+  readonly alertButtons = [
+    {
+      text: 'Ne',
+      role: 'cancel',
+    },
+    {
+      text: 'Ano',
+      role: 'confirm',
+      handler: () => {
+        this.clear();
+      },
+    },
+  ];
+
+  constructor(private toastController: ToastController) {}
+
+  async presentToast(position: 'top') {
+    const toast = await this.toastController.create({
+      message: 'Záznam byl úspěšně odstraněn!',
+      duration: 1500,
+      position: position,
+    });
+
+    await toast.present();
+  }
 
   async ngOnInit(): Promise<void> {
     await this.counterService.initialize();
