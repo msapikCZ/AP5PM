@@ -43,6 +43,7 @@
       color="success"
       [disabled]="!counterName.trim()"
       (click)="save()"
+      (click)="presentToast('top')"
     >
       Uložit počítadlo
     </ion-button>

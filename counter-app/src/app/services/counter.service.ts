@@ -3,6 +3,7 @@ import { Preferences } from '@capacitor/preferences';
 import { SavedCounter } from '../models/saved-counter';
 
 export type CounterSort = 'date' | 'name' | 'value';
+export type ValueFilter = 'all' | 'positive' | 'negative';
 
 @Injectable({
   providedIn: 'root',
@@ -12,11 +13,15 @@ export class CounterService {
   private readonly countersState = signal<SavedCounter[]>([]);
   private readonly initializedState = signal(false);
   private readonly sortState = signal<CounterSort>('date');
+  private readonly searchState = signal('');
+  private readonly valueFilterState = signal<ValueFilter>('all');
   private initializationPromise: Promise<void> | null = null;
 
   readonly counters = this.countersState.asReadonly();
   readonly initialized = this.initializedState.asReadonly();
   readonly sort = this.sortState.asReadonly();
+  readonly search = this.searchState.asReadonly();
+  readonly valueFilter = this.valueFilterState.asReadonly();
 
   readonly sortedCounters = computed(() => {
     const counters = [...this.countersState()];
@@ -37,6 +42,23 @@ export class CounterService {
     }
   });
 
+  readonly filteredCounters = computed(() => { 
+    const search = this.searchState().trim().toLowerCase(); 
+    const valueFilter = this.valueFilterState(); 
+    
+    return this.sortedCounters().filter((counter) => { 
+      const matchesSearch = 
+      counter.name.toLowerCase().includes(search); 
+      
+      const matchesValue = 
+        valueFilter === 'all' || 
+        (valueFilter === 'positive' && counter.value > 0) || 
+        (valueFilter === 'negative' && counter.value < 0); 
+        
+      return matchesSearch && matchesValue; 
+    }); 
+  });
+
   readonly totalValue = computed(() =>
     this.counters().reduce((sum, counter) => sum + counter.value, 0),
   );
@@ -48,6 +70,14 @@ export class CounterService {
 
   setSort(sort: CounterSort): void {
     this.sortState.set(sort);
+  }
+
+  setValueFilter(filter: ValueFilter): void { 
+    this.valueFilterState.set(filter); 
+  }
+
+  setSearch(search: string): void { 
+    this.searchState.set(search); 
   }
 
   async add(counter: SavedCounter): Promise<void> {

@@ -7,6 +7,7 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonInput,
+  ToastController
 } from '@ionic/angular';
 import { SavedCounter } from '../../models/saved-counter';
 
@@ -27,6 +28,18 @@ import { SavedCounter } from '../../models/saved-counter';
 export class CounterComponent {
   readonly heading = input('Nové počítadlo');
   readonly saved = output<SavedCounter>();
+
+  constructor(private toastController: ToastController) {}
+
+  async presentToast(position: 'top') {
+    const toast = await this.toastController.create({
+      message: 'Záznam byl úspěšně přidán!',
+      duration: 1500,
+      position: position,
+    });
+
+    await toast.present();
+  }
 
   counterName = '';
   count = 0;

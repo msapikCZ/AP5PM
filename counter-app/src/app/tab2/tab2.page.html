@@ -16,10 +16,13 @@
     <div class="history-header">
       <p>Počet záznamů: {{ counterService.counters().length }}</p>
       <p>Součet všech počítadel: {{ counterService.totalValue() }}</p>
-      <ion-button color="danger" fill="outline" size="small" (click)="clear()">
+      <ion-button id="delete-alert" color="danger" fill="outline" size="small">
         Vymazat vše
       </ion-button>
+      <ion-alert trigger="delete-alert" class="custom-alert" header="Jsi si jistý, že chceš vše vymazat?" [buttons]="alertButtons"></ion-alert>
     </div>
+
+    <ion-searchbar [debounce]="200" (ionInput)="handleInput($event)"></ion-searchbar>
 
     <div class="sort-container">
       <ion-item>
@@ -43,8 +46,30 @@
       </ion-item>
     </div>
 
+    <div class="filter-container">
+      <ion-item>
+        <ion-select
+          label="Filtr hodnot"
+          [value]="counterService.valueFilter()"
+          (ionChange)="changeValueFilter($event.detail.value)"
+        >
+          <ion-select-option value="all">
+            Všechny
+          </ion-select-option>
+
+          <ion-select-option value="positive">
+            Kladné
+          </ion-select-option>
+
+          <ion-select-option value="negative">
+            Záporné
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
+
     <ion-list>
-      @for (counter of counterService.sortedCounters(); track counter.id) {
+      @for (counter of counterService.filteredCounters(); track counter.id) {
         <ion-item>
           <ion-label>
             <h2>{{ counter.name }}</h2>
@@ -59,6 +84,7 @@
             fill="clear"
             aria-label="Odstranit záznam"
             (click)="remove(counter.id)"
+            (click)="presentToast('top')"
           >
             Odstranit
           </ion-button>
