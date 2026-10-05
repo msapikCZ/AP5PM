@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, computed, signal } from '@angular/core';
 import { Preferences } from '@capacitor/preferences';
 import { SavedCounter } from '../models/saved-counter';
 
@@ -18,6 +18,10 @@ export class CounterService {
     this.initializationPromise ??= this.load();
     return this.initializationPromise;
   }
+
+  readonly totalValue = computed(() =>
+    this.counters().reduce((sum, counter) => sum + counter.value, 0),
+  );
 
   async add(counter: SavedCounter): Promise<void> {
     await this.initialize();
