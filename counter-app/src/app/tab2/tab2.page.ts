@@ -8,11 +8,13 @@ import {
   IonLabel,
   IonList,
   IonNote,
+  IonSelect,
+  IonSelectOption,
   IonSpinner,
   IonTitle,
   IonToolbar,
 } from '@ionic/angular';
-import { CounterService } from '../services/counter.service';
+import { CounterService, CounterSort } from '../services/counter.service';
 
 @Component({
   selector: 'app-tab2',
@@ -27,6 +29,8 @@ import { CounterService } from '../services/counter.service';
     IonLabel,
     IonList,
     IonNote,
+    IonSelect,
+    IonSelectOption,
     IonSpinner,
     IonTitle,
     IonToolbar,
@@ -45,5 +49,9 @@ export class Tab2Page implements OnInit {
 
   async clear(): Promise<void> {
     await this.counterService.clear();
+  }
+
+  async changeSort(sort: CounterSort): Promise<void> {
+    await this.counterService.setSort(sort);
   }
 }
