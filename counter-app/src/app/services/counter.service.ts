@@ -12,11 +12,13 @@ export class CounterService {
   private readonly countersState = signal<SavedCounter[]>([]);
   private readonly initializedState = signal(false);
   private readonly sortState = signal<CounterSort>('date');
+  private readonly searchState = signal('');
   private initializationPromise: Promise<void> | null = null;
 
   readonly counters = this.countersState.asReadonly();
   readonly initialized = this.initializedState.asReadonly();
   readonly sort = this.sortState.asReadonly();
+  readonly search = this.searchState.asReadonly();
 
   readonly sortedCounters = computed(() => {
     const counters = [...this.countersState()];
@@ -37,6 +39,18 @@ export class CounterService {
     }
   });
 
+  readonly filteredCounters = computed(() => { 
+    const search = this.searchState().trim().toLowerCase(); 
+    
+    if (search === '') { 
+      return this.sortedCounters(); 
+    } 
+    
+    return this.sortedCounters().filter((counter) => 
+      counter.name.toLowerCase().includes(search), 
+    ); 
+  });
+
   readonly totalValue = computed(() =>
     this.counters().reduce((sum, counter) => sum + counter.value, 0),
   );
@@ -48,6 +62,10 @@ export class CounterService {
 
   setSort(sort: CounterSort): void {
     this.sortState.set(sort);
+  }
+
+  setSearch(search: string): void { 
+    this.searchState.set(search); 
   }
 
   async add(counter: SavedCounter): Promise<void> {

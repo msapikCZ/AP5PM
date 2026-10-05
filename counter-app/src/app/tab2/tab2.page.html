@@ -21,6 +21,8 @@
       </ion-button>
     </div>
 
+    <ion-searchbar [debounce]="200" (ionInput)="handleInput($event)"></ion-searchbar>
+
     <div class="sort-container">
       <ion-item>
         <ion-select
@@ -44,7 +46,7 @@
     </div>
 
     <ion-list>
-      @for (counter of counterService.sortedCounters(); track counter.id) {
+      @for (counter of counterService.filteredCounters(); track counter.id) {
         <ion-item>
           <ion-label>
             <h2>{{ counter.name }}</h2>

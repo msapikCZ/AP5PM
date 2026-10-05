@@ -13,6 +13,7 @@ import {
   IonSpinner,
   IonTitle,
   IonToolbar,
+  IonSearchbar,
 } from '@ionic/angular';
 import { CounterService, CounterSort } from '../services/counter.service';
 
@@ -34,6 +35,7 @@ import { CounterService, CounterSort } from '../services/counter.service';
     IonSpinner,
     IonTitle,
     IonToolbar,
+    IonSearchbar,
   ],
 })
 export class Tab2Page implements OnInit {
@@ -53,5 +55,11 @@ export class Tab2Page implements OnInit {
 
   async changeSort(sort: CounterSort): Promise<void> {
     await this.counterService.setSort(sort);
+  }
+
+  async handleInput(event: Event): Promise<void> { 
+    const target = event.target as HTMLIonSearchbarElement; 
+    const query = target.value ?? ''; 
+    this.counterService.setSearch(query); 
   }
 }
