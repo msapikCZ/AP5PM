@@ -5,91 +5,86 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
-  @if (!counterService.initialized()) {
-    <div class="state-message">
-      <ion-spinner></ion-spinner>
-      <p>Načítám historii…</p>
-    </div>
-  } @else if (counterService.counters().length === 0) {
-    <p class="state-message">Historie je zatím prázdná.</p>
+  @if (authError()) {
+  <p class="state-message">{{ authError() }}</p>
+  } @else if (auth.userId(); as uid) {
+  <p class="state-message">Anonymní uživatel: {{ uid }}</p>
   } @else {
-    <div class="history-header">
-      <p>Počet záznamů: {{ counterService.counters().length }}</p>
-      <p>Součet všech počítadel: {{ counterService.totalValue() }}</p>
-      <ion-button id="delete-alert" color="danger" fill="outline" size="small">
-        Vymazat vše
+  <p class="state-message">Přihlašuji…</p>
+  }
+  @if (!counterService.initialized()) {
+  <div class="state-message">
+    <ion-spinner></ion-spinner>
+    <p>Načítám historii…</p>
+  </div>
+  } @else if (counterService.counters().length === 0) {
+  <p class="state-message">Historie je zatím prázdná.</p>
+  } @else {
+  <div class="history-header">
+    <p>Počet záznamů: {{ counterService.counters().length }}</p>
+    <p>Součet všech počítadel: {{ counterService.totalValue() }}</p>
+    <ion-button id="delete-alert" color="danger" fill="outline" size="small">
+      Vymazat vše
+    </ion-button>
+    <ion-alert trigger="delete-alert" class="custom-alert" header="Jsi si jistý, že chceš vše vymazat?"
+      [buttons]="alertButtons"></ion-alert>
+  </div>
+
+  <ion-searchbar [debounce]="200" (ionInput)="handleInput($event)"></ion-searchbar>
+
+  <div class="sort-container">
+    <ion-item>
+      <ion-select label="Řazení" [value]="counterService.sort()" (ionChange)="changeSort($event.detail.value)">
+        <ion-select-option value="date">
+          Nejnovější
+        </ion-select-option>
+
+        <ion-select-option value="name">
+          Podle názvu
+        </ion-select-option>
+
+        <ion-select-option value="value">
+          Podle hodnoty
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+  </div>
+
+  <div class="filter-container">
+    <ion-item>
+      <ion-select label="Filtr hodnot" [value]="counterService.valueFilter()"
+        (ionChange)="changeValueFilter($event.detail.value)">
+        <ion-select-option value="all">
+          Všechny
+        </ion-select-option>
+
+        <ion-select-option value="positive">
+          Kladné
+        </ion-select-option>
+
+        <ion-select-option value="negative">
+          Záporné
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+  </div>
+
+  <ion-list>
+    @for (counter of counterService.filteredCounters(); track counter.id) {
+    <ion-item>
+      <ion-label>
+        <h2>{{ counter.name }}</h2>
+        <p>{{ counter.createdAt | date: 'd. M. y, HH:mm' }}</p>
+      </ion-label>
+
+      <ion-note slot="end">{{ counter.value }}</ion-note>
+
+      <ion-button slot="end" color="danger" fill="clear" aria-label="Odstranit záznam" (click)="remove(counter.id)"
+        (click)="presentToast('top')">
+        Odstranit
       </ion-button>
-      <ion-alert trigger="delete-alert" class="custom-alert" header="Jsi si jistý, že chceš vše vymazat?" [buttons]="alertButtons"></ion-alert>
-    </div>
-
-    <ion-searchbar [debounce]="200" (ionInput)="handleInput($event)"></ion-searchbar>
-
-    <div class="sort-container">
-      <ion-item>
-        <ion-select
-          label="Řazení"
-          [value]="counterService.sort()"
-          (ionChange)="changeSort($event.detail.value)"
-        >
-          <ion-select-option value="date">
-            Nejnovější
-          </ion-select-option>
-
-          <ion-select-option value="name">
-            Podle názvu
-          </ion-select-option>
-
-          <ion-select-option value="value">
-            Podle hodnoty
-          </ion-select-option>
-        </ion-select>
-      </ion-item>
-    </div>
-
-    <div class="filter-container">
-      <ion-item>
-        <ion-select
-          label="Filtr hodnot"
-          [value]="counterService.valueFilter()"
-          (ionChange)="changeValueFilter($event.detail.value)"
-        >
-          <ion-select-option value="all">
-            Všechny
-          </ion-select-option>
-
-          <ion-select-option value="positive">
-            Kladné
-          </ion-select-option>
-
-          <ion-select-option value="negative">
-            Záporné
-          </ion-select-option>
-        </ion-select>
-      </ion-item>
-    </div>
-
-    <ion-list>
-      @for (counter of counterService.filteredCounters(); track counter.id) {
-        <ion-item>
-          <ion-label>
-            <h2>{{ counter.name }}</h2>
-            <p>{{ counter.createdAt | date: 'd. M. y, HH:mm' }}</p>
-          </ion-label>
-
-          <ion-note slot="end">{{ counter.value }}</ion-note>
-
-          <ion-button
-            slot="end"
-            color="danger"
-            fill="clear"
-            aria-label="Odstranit záznam"
-            (click)="remove(counter.id)"
-            (click)="presentToast('top')"
-          >
-            Odstranit
-          </ion-button>
-        </ion-item>
-      }
-    </ion-list>
+    </ion-item>
+    }
+  </ion-list>
   }
 </ion-content>

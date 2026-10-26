@@ -1,4 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { FirebaseAuthService } from '../services/firebase-auth.service';
 import { DatePipe } from '@angular/common';
 import {
   IonButton,
@@ -43,6 +44,8 @@ import { CounterService, CounterSort, ValueFilter, } from '../services/counter.s
 })
 export class Tab2Page implements OnInit {
   readonly counterService = inject(CounterService);
+  readonly auth = inject(FirebaseAuthService);
+  readonly authError = signal('');
 
   readonly alertButtons = [
     {
@@ -58,7 +61,7 @@ export class Tab2Page implements OnInit {
     },
   ];
 
-  constructor(private toastController: ToastController) {}
+  constructor(private toastController: ToastController) { }
 
   async presentToast(position: 'top') {
     const toast = await this.toastController.create({
@@ -72,6 +75,13 @@ export class Tab2Page implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.counterService.initialize();
+
+    try {
+      await this.auth.initialize();
+    } catch (error) {
+      console.error(error);
+      this.authError.set('Přihlášení se nezdařilo. Zkontrolujte konfiguraci.');
+    }
   }
 
   async remove(id: string): Promise<void> {
@@ -86,13 +96,13 @@ export class Tab2Page implements OnInit {
     await this.counterService.setSort(sort);
   }
 
-  async changeValueFilter(filter: ValueFilter): Promise<void> { 
-    await this.counterService.setValueFilter(filter); 
+  async changeValueFilter(filter: ValueFilter): Promise<void> {
+    await this.counterService.setValueFilter(filter);
   }
 
-  async handleInput(event: Event): Promise<void> { 
-    const target = event.target as HTMLIonSearchbarElement; 
-    const query = target.value ?? ''; 
-    this.counterService.setSearch(query); 
+  async handleInput(event: Event): Promise<void> {
+    const target = event.target as HTMLIonSearchbarElement;
+    const query = target.value ?? '';
+    this.counterService.setSearch(query);
   }
 }
