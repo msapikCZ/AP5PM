@@ -1,27 +1,18 @@
-#container {
-  text-align: center;
-
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+ion-card {
+  max-width: 32rem;
+  margin: 1rem auto;
 }
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
+.field {
+  margin-top: 1rem;
 }
 
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-
-  color: #8c8c8c;
-
-  margin: 0;
+.label {
+  margin: 1.25rem 0 0.5rem;
+  font-size: 0.85rem;
+  color: var(--ion-color-medium);
 }
 
-#container a {
-  text-decoration: none;
+.start-button {
+  margin-top: 2rem;
 }

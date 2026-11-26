@@ -1,16 +1,62 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title> Blank </ion-title>
+    <ion-title>Časomíra</ion-title>
+    <ion-buttons slot="end">
+      <ion-button routerLink="/history" aria-label="Historie">
+        <ion-icon slot="icon-only" name="time-outline"></ion-icon>
+      </ion-button>
+      <ion-button routerLink="/settings" aria-label="Nastavení">
+        <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Nový zápas</ion-card-title>
+    </ion-card-header>
 
-  <h1>Závěrečný projekt - časomíra</h1>
-  <p>AP5PM 2026 – Matyáš Sapík</p>
+    <ion-card-content>
+      <ion-input
+        label="Domácí"
+        label-placement="stacked"
+        fill="outline"
+        placeholder="Název domácího týmu"
+        [(ngModel)]="homeName"
+      ></ion-input>
+
+      <ion-input
+        class="field"
+        label="Hosté"
+        label-placement="stacked"
+        fill="outline"
+        placeholder="Název hostujícího týmu"
+        [(ngModel)]="awayName"
+      ></ion-input>
+
+      <ion-input
+        class="field"
+        label="Délka třetiny (min)"
+        label-placement="stacked"
+        fill="outline"
+        type="number"
+        inputmode="numeric"
+        [(ngModel)]="periodMinutes"
+      ></ion-input>
+
+      <p class="label">Počet třetin</p>
+      <ion-segment [(ngModel)]="periods">
+        <ion-segment-button [value]="2"><ion-label>2</ion-label></ion-segment-button>
+        <ion-segment-button [value]="3"><ion-label>3</ion-label></ion-segment-button>
+        <ion-segment-button [value]="4"><ion-label>4</ion-label></ion-segment-button>
+      </ion-segment>
+
+      <ion-button class="start-button" expand="block" size="large" [disabled]="!isValid" (click)="startMatch()">
+        <ion-icon slot="start" name="play-outline"></ion-icon>
+        Začít zápas
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
